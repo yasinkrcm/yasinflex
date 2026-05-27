@@ -19,7 +19,9 @@ const FILTERS = [
   { id: 'top_rated', label: 'Top Rated' },
 ];
 
-export default function TVPage() {
+import { Suspense } from 'react';
+
+function TVPageContent() {
   const searchParams = useSearchParams();
   const genreParam = searchParams.get('genre');
 
@@ -147,5 +149,13 @@ export default function TVPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function TVPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TVPageContent />
+    </Suspense>
   );
 }

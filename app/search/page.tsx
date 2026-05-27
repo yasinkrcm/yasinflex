@@ -7,7 +7,9 @@ import { MovieCard } from '@/components/MovieCard';
 import Footer from '@/components/Footer';
 import { searchMulti, type TMDBMovie } from '@/lib/tmdb';
 
-export default function SearchPage() {
+import { Suspense } from 'react';
+
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q') || '';
@@ -177,5 +179,13 @@ export default function SearchPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }

@@ -332,7 +332,7 @@ export default function TVDetailClient({ id }: { id: string }) {
             season={currentSeason}
             episode={currentEpisode}
             title={title}
-            poster={show.poster_path}
+            poster={show.poster_path ?? undefined}
             episodes={episodes}
             onEpisodeChange={handleEpisodeSelect}
           />

@@ -22,7 +22,9 @@ const FILTERS = [
   { id: 'upcoming', label: 'Upcoming' },
 ];
 
-export default function MoviesPage() {
+import { Suspense } from 'react';
+
+function MoviesPageContent() {
   const searchParams = useSearchParams();
   const genreParam = searchParams.get('genre');
 
@@ -164,5 +166,13 @@ export default function MoviesPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function MoviesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MoviesPageContent />
+    </Suspense>
   );
 }
