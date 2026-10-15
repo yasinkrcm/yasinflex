@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -49,8 +51,9 @@ const nextConfig: NextConfig = {
               // Varsayılan olarak sadece kendi domain'e izin ver
               "default-src 'self'",
 
-              // Script: oynatıcıların dinamik script yüklemelerine izin vermek için genişletildi
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:",
+              // Script: sadece kendi script'leri + Next.js hydration'ı için inline.
+              // unsafe-eval yalnızca dev (React Refresh/HMR) için.
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
 
               // Style: kendi + Google Fonts
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -61,17 +64,20 @@ const nextConfig: NextConfig = {
               // Resimler: TMDB + wsrv.nl + data URI
               "img-src 'self' data: blob: https://image.tmdb.org https://wsrv.nl https://*.tmdb.org",
 
-              // Frame/Embed: Oynatıcıların iç içe dinamik iframe ve CDN yüklemelerini engellememek için serbest bırakıldı
-              "frame-src 'self' https: http: data: blob:",
+              // Frame/Embed: oynatıcı iframe'leri https üzerinden yüklenir
+              "frame-src 'self' https:",
 
-              // Bağlantı: API çağrıları
-              "connect-src 'self' https: http:",
+              // Bağlantı: API çağrıları — TMDB çağrıları sunucu tarafında yapılır
+              "connect-src 'self'",
 
-              // Media (HLS/video kaynakları)
-              "media-src 'self' blob: https: http:",
+              // Media (blob: HLS kaynakları)
+              "media-src 'self' blob: https:",
 
               // Worker (service worker vb.)
               "worker-src 'self' blob:",
+
+              // Nesne/embed etiketlerini tamamen kapat
+              "object-src 'none'",
 
               // Form gönderimlerini sadece kendi siteye izin ver
               "form-action 'self'",

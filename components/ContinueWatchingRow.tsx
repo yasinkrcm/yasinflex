@@ -58,7 +58,8 @@ export default function ContinueWatchingRow() {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const r = await fetch(`/api/watch-history?id=${id}`, { method: 'DELETE' });
+      const guestParam = user ? '' : `&guestId=${encodeURIComponent(guestId)}`;
+      const r = await fetch(`/api/watch-history?id=${id}${guestParam}`, { method: 'DELETE' });
       if (r.ok) {
         setHistory(prev => prev.filter(item => item._id !== id));
       }

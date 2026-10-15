@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yasinflex_secret';
+// Prod secreta zorla; yoksa proses-geneli rastgele anahtar üret (restart'ta geçersiz olur)
+const JWT_SECRET = process.env.JWT_SECRET || randomBytes(32).toString('hex');
+if (!process.env.JWT_SECRET) {
+  console.warn(
+    'UYARI: JWT_SECRET tanımlı değil! Rastgele geçici anahtar kullanılıyor; sunucu yeniden başlatıldığında tüm oturumlar geçersizleşir. Prod ortamda mutlaka .env dosyasında tanımlayın.'
+  );
+}
 
 export function signToken(payload: object) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
